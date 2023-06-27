@@ -1,0 +1,30 @@
+Заходим в Postman, используя POST запрос пишем " http://localhost:5000/auth/registration " и в body указать:
+{
+    "username" : "admin",
+    "password": "admin"
+}
+
+Далее для авторизации необходимо послать POST " http://localhost:5000/auth/login " указав данные пользователя:
+{
+    "username" : "admin",
+    "password": "admin"
+}
+
+Если такой юсер имеется, то выдаст ключ:
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY
+	0NmM2NzUzODhlMmYwODhiNDMwOTk5MSIsInJvbGVzIjpbIkFETUlOIl0sImlhd
+	CI6MTY4Nzg3MDg3NywiZXhwIjoxNjg3OTU3Mjc3fQ.3UAB03XXerdp7_9iH5-1
+	LXlTtYC8glFaOTFfEmuEpJg"
+}
+
+После чего неообходимо перейти во вкладку Headers и указать 
+	______________	  ______________________________________________________________________
+	|Authorization|	 |Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY		|
+	---------------	 |	0NmM2NzUzODhlMmYwODhiNDMwOTk5MSIsInJvbGVzIjpbIkFETUlOIl0sImlhd	|
+			 |	CI6MTY4Nzg3MDg3NywiZXhwIjoxNjg3OTU3Mjc3fQ.3UAB03XXerdp7_9iH5-1	|
+			 |	LXlTtYC8glFaOTFfEmuEpJg						|
+			  ---------------------------------------------------------------------
+
+После успешной авторизации можно использовать GET запрос " http://localhost:5000/auth/users "
+для получения списка всех юзеров.

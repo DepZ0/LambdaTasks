@@ -1,0 +1,19 @@
+В Postman делаем POST запрос на адрес " http://localhost:5000/ТУТ_НАЗВАНИЕ_РОУТА "
+Далее указываем необходимые данные в Body, к примеру:
+
+{
+  "name": "Alex Bezver",
+  "bankID": 21,
+  "car": "dex2211@gmail.com"
+}
+
+Или
+
+{
+  "name": "Lalo Salman",
+  "age": 36,
+  "email": "eduardo@gmail.com"
+}
+
+
+Готово!
