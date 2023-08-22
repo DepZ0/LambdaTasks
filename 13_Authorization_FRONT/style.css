@@ -1,0 +1,49 @@
+.inp_div {
+    margin-top: 15%;
+    margin-left: 33%;
+    
+    background: #c7eebf;
+    height: 400px;
+    width: 600px;
+    
+    }
+
+.inp_email, .inp_pass, .but1, .but2 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 23px;
+}
+
+.inp_email {
+    position: relative;
+    top: 20%;
+    left: 10%;
+
+    height: 50px;
+    width: 80%; 
+    
+}
+.inp_pass {
+    position: relative;
+    top: 30%;
+    left: 10%;
+
+    height: 50px;
+    width: 80%; 
+}
+
+
+.but1 {
+    position: relative;
+    top: 60%;
+    right: 60%;
+
+    height: 50px;
+    width: 100px;
+}
+.but2 {
+    position: relative;
+    top: 46.8%;
+    right: -50%;
+    height: 50px;
+    width: 100px;
+}
