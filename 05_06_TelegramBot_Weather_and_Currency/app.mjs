@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import axios from "axios";
 
-const token = '5665210675:AAGGGJICDPpOBEyn23UPlsKYC8rIkAnd7lE';
+const token = 'TOKEN';
 const bot = new TelegramBot(token, {polling: true});
 const weatherToken = '3e26fa60c19d67a712fb7527088abebd';
 const baseUrl = 'https://api.openweathermap.org/data/2.5';

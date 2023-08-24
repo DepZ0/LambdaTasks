@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import axios from "axios";
 
-const botToken = '6203657327:AAHEmb583aTtOt-WQZLqLwkBiir-6ICFm4g'; 
+const botToken = 'TOKEN'; 
 const apiUrl = ' https://9994-185-137-217-83.ngrok-free.app/api'; 
 
 const bot = new TelegramBot(botToken, { polling: true });
