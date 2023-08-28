@@ -1,12 +1,52 @@
 import TelegramBot from "node-telegram-bot-api";
 import axios from "axios";
+import fs from 'fs';
 
-const token = 'TOKEN';
+
+const token = '5665210675:AAGGGJICDPpOBEyn23UPlsKYC8rIkAnd7lE';
 const bot = new TelegramBot(token, {polling: true});
 const weatherToken = '3e26fa60c19d67a712fb7527088abebd';
 const baseUrl = 'https://api.openweathermap.org/data/2.5';
 const urlPrivat = 'https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5';
-const urlMono = 'https://api.monobank.ua/bank/currency'
+
+
+// Запись курса для МоноБанка -------------------------------------------------------------------------
+const MonoUSD = 'monoUsd.txt';
+const MonoEUR = 'monoEur.txt';
+// Проверяем наличие файла
+if (!fs.existsSync(MonoUSD)) {
+  // Если файл не существует, создаем его
+  fs.writeFileSync(MonoUSD, '');
+}
+
+if (!fs.existsSync(MonoEUR)) {
+  // Если файл не существует, создаем его
+  fs.writeFileSync(MonoEUR, '');
+}
+
+// Функция для получения курса доллара из API Monobank
+async function getMonoExchangeRate() {
+  const url = 'https://api.monobank.ua/bank/currency';
+  const response = await axios.get(url);
+  const rates = response.data;
+  const usdRate = rates.find(rate => rate.currencyCodeA === 840 && rate.currencyCodeB === 980);
+  const textUsd = `Курс валюты USD к UAH\nПокупка: ${usdRate.rateBuy}\nПродажа: ${usdRate.rateSell}\n`;
+
+  const eurRate = rates.find(rate => rate.currencyCodeA === 978 && rate.currencyCodeB === 980);
+  const textEur = `Курс валюты EUR к UAH\nПокупка: ${eurRate.rateBuy}\nПродажа: ${eurRate.rateSell}\n`;
+  // Записываем курс доллара в файл
+  fs.writeFileSync(MonoUSD, textUsd);
+  fs.writeFileSync(MonoEUR, textEur);
+}
+
+// Запускаем запрос каждые 70 секунд
+setInterval(getMonoExchangeRate, 70000);
+ // Запись курса для МоноБанка END ---------------------------------------------------------------------
+
+
+
+
+
 
 
 
@@ -53,11 +93,17 @@ if (msg.text === 'Валюты') {
         axios.get(urlPrivat)
         .then(response => { 
           const data = response.data[1];
-          bot.sendMessage(chatId, `PrivatBank:\nКурс валюты ${data.ccy} к ${data.base_ccy}\n Покупка: ${data.buy}\n Продажа: ${data.sale}`, keyboard)
+          bot.sendMessage(chatId, `PrivatBank:\nКурс валюты ${data.ccy} к UAH\n Покупка: ${data.buy}\n Продажа: ${data.sale}`, keyboard)
         })
       }
       // MONO
-      
+
+        
+      if (msg.text === 'USD') {       
+        const fileContents = fs.readFileSync(MonoUSD, 'utf-8');
+        bot.sendMessage(chatId, `MonoBank:\n${fileContents}`);
+      }
+
 
 
     
@@ -79,7 +125,10 @@ if (msg.text === 'Валюты') {
       }
       // MONO
 
-
+      if (msg.text === 'EUR') {       
+        const fileContents = fs.readFileSync(MonoEUR, 'utf-8');
+        bot.sendMessage(chatId, `MonoBank:\n${fileContents}`);
+      }
 
 
 // ВАЛЮТЫ End
@@ -174,6 +223,8 @@ if (
   && msg.text != 'USD'
   && msg.text != 'EUR'
   && msg.text != 'Ошибка при получении данных'
+  && msg.text != '/AdminPanel'
+  && msg.text != 'Отправить сообщение'
   ) {
 
   const keyboard = {
@@ -187,18 +238,98 @@ if (
 
 }
 
+// ------------------------
+
+
+const dataPath = './log.txt';
+
+// Проверяем, существует ли файл с данными
+if (!fs.existsSync(dataPath)) {
+  // Если файл не существует, создаем пустой массив и записываем его в файл
+  fs.writeFileSync(dataPath, '[]');
+}
+
+
+const time = new Date(msg.date * 1000).toLocaleTimeString();
+const senderName = `${msg.from.first_name} ${msg.from.last_name}`;
+const senderId = msg.from.id;
+const message = msg.text;
+const logMessage = `[${time}] ${senderName} (${senderId}): ${message}\n`;
+
+fs.appendFile('log.txt', logMessage, (err) => {
+  if (err) throw err;
+  // console.log(`Message logged: ${logMessage}`);
+});
+
+// ------------------------
+
+
+
+
+if (msg.text === '/AdminPanel') {
+
+      if (chatId === 453004433 || chatId === 1907735364) {
+      const keyboard = {
+        reply_markup: {
+          keyboard: [[{ text: 'Отправить сообщение' }, { text: 'Назад' }]],
+          resize_keyboard: true,
+          one_time_keyboard: true
+        }
+      }
+      bot.sendMessage(chatId, 'Добро пожаловать!', keyboard)
+    } else {
+      const keyboard = {
+        reply_markup: {
+          keyboard: [[{ text: 'Погода' }, { text: 'Валюта' }]],
+          resize_keyboard: true,
+          one_time_keyboard: true
+        }
+      };
+      bot.sendMessage(chatId, 'Выбери действие', keyboard)
+    };
+};
+      // if (msg.text === 'Отправить сообщение') {
+          
+      // if (chatId === 453004433) {
+      //   const keyboard = {
+      //     reply_markup: {
+      //       keyboard: [[{ text: 'Отправить сообщение' }, { text: 'Назад' }]],
+      //       resize_keyboard: true,
+      //       one_time_keyboard: true
+      //     }
+      //   }
+      //   bot.sendMessage(453004433, 'Добро пожаловать!', keyboard)
+      
+      
+      
+      
+      // } 
+      
+      
+      
+      // else {
+      //   const keyboard = {
+      //     reply_markup: {
+      //       keyboard: [[{ text: 'Погода' }, { text: 'Валюта' }]],
+      //       resize_keyboard: true,
+      //       one_time_keyboard: true
+      //     }
+      //   };
+      //   bot.sendMessage(chatId, 'Выбери действие', keyboard)
+      // };  
+
+      // }
+
+
+// ------------------------------
+
 if (msg.text === 'Получить 100 грн') {
 
 const stk = 'CAACAgIAAxkBAAPRZFNxP-mBZLBpxCOp12id0agdfrEAAswTAAKeeKFJtOKMlwgS4TsvBA';
    bot.sendSticker(chatId, stk);
 
-}
+};
 
-if (msg.text != undefined) {
-
-  bot.sendMessage(453004433, `${msg.chat.first_name} (${msg.chat.id}): ${msg.text}`)
-  
-}
 
 });
 
