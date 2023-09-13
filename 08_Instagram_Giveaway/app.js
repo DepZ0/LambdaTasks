@@ -1,34 +1,32 @@
 const fs = require('fs');
-const { uniq } = require('lodash');
-let allUsers = 0;
-let uniqUsers = 0;
-// let repUsers = 0;
-async function checkUsernames() {
-  
-    for (let i = 0; i < 20; i++) {
-    const fileContent = await fs.promises.readFile(`./base/out${i}.txt`, 'utf-8');
-    const usernames = fileContent.split('\n');
-    allUsers += usernames.length;
-    // console.log(`Всего имен пользователей: ${[i]} : ${allUsers}`);
-    // Далее следует код для проверки уникальности ников
-    const uniqueUsernames = new Set();
-let duplicates = 0;
 
-for (const username of usernames) {
-  if (uniqueUsernames.has(username)) {
-    duplicates++;
-  } else {
-    uniqueUsernames.add(username);
-  }
+
+async function checkUsernames() {
+  let allUsers = 0;
+  let uniqUsers = 0;
+
+  const allUsernames = await Promise.all(
+    filePath().map(filePath => fs.promises.readFile(filePath, 'utf-8'))
+      );
+  const allUsernamesStr = allUsernames.join('\n');
+
+  const usernames = allUsernamesStr.split('\n');
+    allUsers += usernames.length;
+
+    // Далее следует код для проверки уникальности ников
+  const uniqueUsernames = new Set();
+  let duplicates = 0;
+
+  for (const username of usernames) {
+    if (uniqueUsernames.has(username)) {
+      duplicates++;
+    } else {
+      uniqueUsernames.add(username);
+    }
 
 }
-uniqUsers += uniqueUsernames.size;
-// repUsers += duplicates;
+    uniqUsers += uniqueUsernames.size;
 
-// console.log(`Уникальные имена пользователей: ${uniqUsers}`);
-// console.log(`Повторяющиеся имена пользователей: ${repUsers} \n`);
-  
-    }  
     const result = `Всего имен пользователей: ${allUsers}\n Уникальных значений: ${uniqUsers}\n`
     console.log(result);
 }
@@ -68,45 +66,65 @@ async function countCommonUsernames(filePaths) {
   }
 }
 
+async function countCommonUsernamesInNFiles(filePaths, n) {
+  try {
+    // читаем содержимое всех файлов и объединяем их в одну строку
+    const allUsernames = await Promise.all(
+      filePaths.map(filePath => fs.promises.readFile(filePath, 'utf-8'))
+    );
+    const allUsernamesStr = allUsernames.join('\n');
+
+    // создаем объект, где ключом является юзернейм, а значением количество его вхождений во всех файлах
+    const usernameCounts = {};
+    const usernames = allUsernamesStr.split('\n');
+    for (const username of usernames) {
+      if (username) { // игнорируем пустые строки
+        usernameCounts[username] = (usernameCounts[username] || 0) + 1;
+      }
+    }
+
+    // находим количество юзернеймов, которые встречаются в 10 или более файлах
+    let count = 0;
+    for (const username in usernameCounts) {
+      if (usernameCounts[username] >= n) {
+        count++;
+      }
+    }
+
+    console.log(`\nСловосочетаний, которые есть в не менее чем ${n} файлах: ${count}\n`);
+  } catch (err) {
+    console.error(err);
+  }
+}
+countCommonUsernamesInNFiles(filePath(), 10);
+
 // пример использования функции
-function fp () {
+function filePath () {
   let filePath = [];
   for (let i = 0; i < 20; i++) {
     filePath.push(`./base/out${i}.txt`)
   }
   return filePath
 }
-countCommonUsernames(fp());
+countCommonUsernames(filePath());
 
 // -------------------------------------------------------------------------------------------------------------------
 
-async function countCommonUsernamesInFiles(filePaths, minFileCount) {
-  try {
-    const allUsernames = await Promise.all(
-      filePaths.map(filePath => fs.promises.readFile(filePath, 'utf-8'))
-    );
-    const allUsernamesStr = allUsernames.join('\n');
-    const usernameCounts = {};
-    const usernames = allUsernamesStr.split('\n');
-    for (const username of usernames) {
-      if (username) {
-        usernameCounts[username] = (usernameCounts[username] || 0) + 1;
-      }
-    }
+// function countCommonUsernamesInFiles(arrays, n) {
+//   const set = new Map();
+//     for (let i = 0; i < arrays.length; i++) {
+//         const setArr = new Set(arrays[i]);
+//         for (const elem of setArr ) {
+//           const count = set.get(elem) || 0;
+//           set.set(elem, count + 1)
+//         }
+//     }
 
-    let count = 0;
-    for (const username in usernameCounts) {
-      if (usernameCounts[username] >= minFileCount) {
-        count++;
-      }
-    }
+//     return arrays.filter((e) => {
+//       return set.get(e) >= n;
+//     })
+//   }
 
-    console.log(`Словосочетаний, которые есть, как минимум, в ${minFileCount} файлах: ${count}\n`);
-  } catch (err) {
-    console.error(err);
-  }
-}
+// // пример использования функции
 
-// пример использования функции
-
-countCommonUsernamesInFiles(fp(), 10);
+// console.log(countCommonUsernamesInFiles(fp(), 10))

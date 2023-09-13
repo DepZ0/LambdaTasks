@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="style.css" rel="stylesheet" type="text/css">
+
+    <title>Замовити переклад або редагування</title>
+</head>
+<body>
+    
+<p class="header">Замовити редагування</p>
+
+<div class="main">
+
+<div class="mainBlock">
+    <p class="serviceActive">Послуга</p>
+<select class="selectOfService" onchange="this.style.color='black'">
+    <option value="" style="display:none">Послуга</option>
+    <option value="value1" class="textColorBlack">Редагування</option>
+</select>
+
+<form>
+<textarea type="text" class="textForOrder" placeholder="Введіть текст"></textarea>
+</form>
+
+<div class="inpX4">
+
+<input type="email" placeholder="Ваша електронна пошта" class="in1">
+<p class="emailActive">Ваша електронна пошта</p>
+
+<input type="text" placeholder="Коментар або покликання" class="in2">
+<p class="commentActive">Коментар або покликання</p>
+
+<input type="text" placeholder="Ваше ім'я" class="in3">
+<p class="nameActive">Ваше ім’я</p>
+
+<p class="languageActive">Мова</p>
+<select class="selectOfLang" onchange="this.style.color='black'">
+    <option value="" style="display: none;">Мова</option>
+    <option value="ukr" class="textColorBlack">Українська</option>
+    <option value="eng" class="textColorBlack">Англійська</option>
+    <option value="ru" class="textColorBlack">Російська</option>   
+</select>
+</div>
+    <select class="selectOfExt">
+        <option value="doc">doc</option>
+        <option value="docx">docx</option>
+        <option value="rtf">rtf</option>
+    </select>
+</div>
+<!-- -------------------------- -->
+<div class="secondBlock">
+    <div class="orderPriceBlock">
+        <p align="center" class="orderPrice">0</p>
+        <p align="center" class="orderPriceText">грн</p>
+    </div>
+    <input type="button" value="Замовити" class="orderButton">
+</div>
+
+</div>
+
+<footer>
+<div class="leftSide">
+    <a href="">Договір публічної оферти</a>
+    <p>@sever_0001</p> 
+    <p>since 2023</p>
+</div>
+    <img src="footer_logo.png" alt="footer_logo"> 
+<div class="contacts">
+    <p>Надіслати текст на переклад:</p>
+    <a href="mailto:example@gmail.com">example@gmail.com</a>
+</div>
+</footer>
+
+
+<!-- ---------- -->
+    <script src="scripts.js"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</body>
+</html>
